@@ -459,14 +459,16 @@ const App: React.FC = () => {
 
       <header className="w-full mb-6 md:mb-12 xl:mb-16 flex flex-col md:flex-row justify-between items-center gap-6 px-2">
         <div className="text-center md:text-left flex flex-col items-center md:items-start relative">
-          <div className="flex items-center gap-2 md:gap-4">
-            <h1 className={`text-4xl md:text-8xl xl:text-[7rem] font-black tracking-tighter transition-all duration-700 leading-none ${isAllCached ? 'text-amber-400 drop-shadow-[0_0_20px_rgba(251,191,36,0.4)]' : 'text-white'}`}>
+          <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 md:gap-5">
+            <h1 className={`text-5xl md:text-8xl xl:text-[7rem] font-black tracking-tighter transition-all duration-700 leading-none ${isAllCached ? 'text-amber-400 drop-shadow-[0_0_20px_rgba(251,191,36,0.4)]' : 'text-white'}`}>
               VOZ<span className={isAllCached ? 'text-white' : 'text-terracotta'}>VIVA</span>
             </h1>
             {isAllCached && (
-               <span className="animate-pulse bg-amber-400 text-black text-[9px] md:text-sm font-black px-2 py-0.5 md:px-3 md:py-1 rounded shadow-[0_0_10px_rgba(251,191,36,0.6)] tracking-widest uppercase flex items-center gap-1.5 whitespace-nowrap self-center mt-1 md:mt-2">
-                <i className="fas fa-check-circle"></i> OFFLINE READY
-              </span>
+               <div className="flex items-center">
+                 <span className="animate-pulse bg-amber-400 text-black text-[9px] md:text-sm font-black px-3 py-1 md:px-4 md:py-1.5 rounded-full shadow-[0_0_15px_rgba(251,191,36,0.6)] border border-amber-500/20 tracking-widest uppercase flex items-center gap-1.5 whitespace-nowrap self-center mt-1">
+                  <i className="fas fa-check-circle"></i> OFFLINE READY
+                </span>
+               </div>
             )}
           </div>
           <p className="text-slate-500 font-light text-[8px] md:text-sm tracking-[0.3em] uppercase mt-2 md:mt-4">Advanced Linguistic Training</p>
