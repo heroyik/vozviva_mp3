@@ -88,31 +88,6 @@ async function decodeAudioData(
   return buffer;
 }
 
-// WAV Header Helper
-function createWavHeader(dataLength: number, sampleRate: number = 24000) {
-  const buffer = new ArrayBuffer(44);
-  const view = new DataView(buffer);
-  const writeString = (offset: number, string: string) => {
-    for (let i = 0; i < string.length; i++) {
-      view.setUint8(offset + i, string.charCodeAt(i));
-    }
-  };
-  writeString(0, 'RIFF');
-  view.setUint32(4, 36 + dataLength, true);
-  writeString(8, 'WAVE');
-  writeString(12, 'fmt ');
-  view.setUint32(16, 16, true);
-  view.setUint16(20, 1, true); // PCM
-  view.setUint16(22, 1, true); // Mono
-  view.setUint32(24, sampleRate, true);
-  view.setUint32(28, sampleRate * 2, true);
-  view.setUint16(32, 2, true);
-  view.setUint16(34, 16, true);
-  writeString(36, 'data');
-  view.setUint32(40, dataLength, true);
-  return new Uint8Array(buffer);
-}
-
 const HighlightedForm: React.FC<{ form: string, isIrregular?: boolean }> = ({ form, isIrregular }) => {
   if (form === '-') return <span className="text-slate-800 opacity-30 italic">N/A</span>;
   if (isIrregular) {
@@ -272,7 +247,6 @@ const App: React.FC = () => {
 
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     
-    // No retry loop - Execute once
     try {
       const response = await ai.models.generateContent({
         model: "gemini-2.5-flash-preview-tts",
@@ -294,24 +268,17 @@ const App: React.FC = () => {
                           (err.message && (err.message.includes('429') || err.message.includes('quota') || err.message.includes('RESOURCE_EXHAUSTED')));
       
       if (isRateLimit) {
-        let waitSeconds = 60; // 기본 대기 시간 (60초)
-        
-        // Retry-After 헤더 파싱 시도
-        // Gemini API나 SDK 버전에 따라 에러 객체 구조가 다를 수 있어 방어적 코딩 적용
+        let waitSeconds = 60;
         if (err.response?.headers) {
           try {
             const headers = err.response.headers;
-            // Headers 객체 또는 일반 객체 처리
             const retryAfter = typeof headers.get === 'function' 
               ? headers.get('Retry-After') || headers.get('retry-after')
               : headers['Retry-After'] || headers['retry-after'];
-            
             if (retryAfter) {
               if (/^\d+$/.test(retryAfter)) {
-                // 초 단위로 주어지는 경우
                 waitSeconds = parseInt(retryAfter, 10);
               } else {
-                // HTTP 날짜 포맷 (예: Wed, 21 Oct 2015 07:28:00 GMT)으로 주어지는 경우
                 const date = new Date(retryAfter);
                 if (!isNaN(date.getTime())) {
                     const diff = Math.ceil((date.getTime() - Date.now()) / 1000);
@@ -323,13 +290,11 @@ const App: React.FC = () => {
             console.warn("Failed to parse Retry-After header", e);
           }
         }
-
         const now = new Date();
         const retryTime = new Date(now.getTime() + waitSeconds * 1000); 
         const timeString = retryTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-
         setErrorMessage(`API 할당량(Quota)이 소진되었습니다.\n즉시 실행을 중단합니다.\n다음 시간 이후에 다시 시도해주세요:\n\n[ ${timeString} ]\n\n(약 ${waitSeconds}초 대기 필요)`);
-        stopRequested.current = true; // 중요: 전역 중단 플래그 설정
+        stopRequested.current = true;
         return null;
       } else {
         console.error("API Error:", err);
@@ -380,7 +345,7 @@ const App: React.FC = () => {
         setIsTTSLoading(false);
         await playBuffer(buffer);
       } else {
-        break; // Error or Stop requested
+        break;
       }
     } while (isRepeatEnabledRef.current && !stopRequested.current);
     setIsAudioPlaying(false); setCurrentlyPlayingVerb(null);
@@ -390,13 +355,12 @@ const App: React.FC = () => {
   const downloadTensePacks = () => {
     setIsDownloading(true);
     const link = document.createElement('a');
-    link.href = 'https://github.com/heroyik/vozviva/raw/main/mp3/Archive.zip';
+    link.href = 'https://github.com/heroyik/vozviva_mp3/raw/main/mp3/Archive.zip';
     link.download = 'Archive.zip';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
 
-    // Reset state after a short delay
     setTimeout(() => {
         setIsDownloading(false);
     }, 1500);
@@ -473,7 +437,6 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen px-4 py-4 md:p-8 xl:p-12 flex flex-col items-center max-w-[1600px] mx-auto pb-24 relative overflow-x-hidden">
-      {/* Error Modal */}
       {errorMessage && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-200">
           <div className="bg-slate-900 border border-terracotta/50 p-6 md:p-8 rounded-2xl max-w-md w-full shadow-2xl relative">
@@ -639,7 +602,7 @@ const App: React.FC = () => {
           <a href="https://heroyik.github.io" target="_blank" rel="noopener noreferrer" className="text-slate-600 hover:text-terracotta transition-colors duration-300 transform hover:scale-110">
             <i className="fas fa-globe text-xl md:text-2xl"></i>
           </a>
-          <a href="https://github.com/heroyik/vozviva" target="_blank" rel="noopener noreferrer" className="text-slate-600 hover:text-white transition-colors duration-300 transform hover:scale-110">
+          <a href="https://github.com/heroyik/vozviva_mp3" target="_blank" rel="noopener noreferrer" className="text-slate-600 hover:text-white transition-colors duration-300 transform hover:scale-110">
             <i className="fab fa-github text-xl md:text-2xl"></i>
           </a>
         </div>
