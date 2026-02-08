@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+# exclude mp3 folder and Archive.zip
+mp3
+mp3/*
+*.zip
