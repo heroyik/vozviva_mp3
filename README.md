@@ -1,11 +1,67 @@
-<div align="center">
 
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+# 🏛️ VozViva: 스페인어 시제 마스터 (Spanish Mastery)
 
-  <h1>Built with AI Studio</h2>
+**VozViva**(보즈비바)는 스페인어 시제 변화의 패턴을 시각적으로 분석하고, 원어민의 음성을 통해 청각적으로 각인시키는 **고급 언어 훈련 시스템**입니다. 1년 차 이상의 중급 학습자를 위해 최적화된 학습 환경을 제공합니다.
 
-  <p>The fastest path from prompt to production with Gemini.</p>
+---
 
-  <a href="https://aistudio.google.com/apps">Start building</a>
+## 🚀 주요 기능 (Implemented Features)
 
-</div>
+### 1. 지능형 시제 내비게이션 (Tense Navigation)
+- **약어 시스템 적용**: 모바일 환경에서도 가독성을 잃지 않도록 긴 시제 이름을 약어(예: `Pluscuamp.`, `Imp. Afirmativo`)로 표시합니다.
+- **다중 선택 지원**: 여러 시제를 선택하여 연속해서 듣거나 비교하며 학습할 수 있습니다.
+- **시제 즐겨찾기**: 자주 헷갈리는 시제를 하트로 표시하여 집중 관리할 수 있습니다.
+
+### 2. 시각적 패턴 분석 시스템 (Visual Morphology)
+- **어간/어미 분리**: 규칙 동사의 경우 어간(Stem)과 어미(Ending)를 색상으로 구분(Teal 강조)하여 변화 패턴을 한눈에 파악합니다.
+- **불규칙 강조**: 불규칙 변화가 일어나는 형태는 테라코타(Terracotta) 색상과 글로우 효과로 강조하여 주의를 환기합니다.
+
+### 3. 고정밀 음성 엔진 (Consistent Native Speed) 🆕
+- **일정한 정상 속도 구현**: 모든 음성은 원어민의 자연스러운 **정상 속도**를 유지하며, 문장 간 속도 편차 없이 일관되게 재생됩니다. 이를 통해 실제 대화 속도에 맞춘 청취 및 쉐도잉 훈련이 가능합니다.
+- **문맥 인식 발음**: Google Gemini API를 활용하여 인칭 대명사와 동사 변화가 자연스럽게 이어지는 문장형 음성을 생성합니다.
+- **반복 학습 모드**: 'Repeat' 기능을 활성화하면 한 동사의 변화형을 무한 반복하여 들으며 암기할 수 있습니다.
+
+### 4. 오프라인 마스터 (IndexedDB Caching)
+- **스마트 캐싱**: 한 번 생성된 음성 데이터는 브라우저 내부 DB(IndexedDB)에 영구 저장됩니다.
+- **데이터 절약**: 중복된 API 호출을 방지하고, 인터넷 연결이 불안정한 곳에서도 'Offline Ready' 상태로 학습을 지속할 수 있습니다.
+
+### 5. 시제별 학습 팩 다운로드 (Tense Pack Export)
+- **시제 기반 추출**: 시제 선택 그리드에서 하트(♥)를 누른 시제들을 대상으로 오디오 파일을 생성합니다.
+- **파일 분할 저장**: 선택한 각 시제별로 별도의 파일(예: `Presente.wav`, `Indefinido.wav`)이 생성되어 저장됩니다.
+- **스마트 리딩**: 각 파일은 **"시제명 + 동사원형 + 인칭별 변형"** 순서로 구성되어, 오디오만 듣고도 어떤 시제 변화를 연습하고 있는지 즉각 파악할 수 있습니다.
+
+### 6. 스마트 할당량 관리 (Smart Quota Management)
+- **Zero Retry 정책**: API 할당량 초과(429 Error) 시 불필요한 재시도를 하지 않고, 시스템 보호를 위해 **즉시 요청을 중단**합니다.
+- **정밀 헤더 분석**: 응답 헤더(`Retry-After`)를 자동으로 분석하여, 정확히 **몇 시 몇 분 몇 초**에 다시 사용이 가능한지 사용자에게 구체적인 시각을 안내합니다.
+
+### 7. 커리큘럼 확장 (Curriculum Expansion) 🆕
+- **부정 명령형(Imperativo Negativo) 완전 정복**: 규칙 동사(`Hablar`, `Comer`, `Vivir`)와 함께 접속법 현재형을 사용하는 주요 불규칙 동사 10종(`Dar`, `Ser`, `Ver`, `Ir`, `Decir`, `Hacer`, `Poner`, `Salir`, `Tener`, `Venir`)을 추가하여 명령법 학습을 완성합니다.
+- **불완료 과거(Pretérito Imperfecto) 마스터**: 해당 시제에서 유일하게 불규칙한 3대 동사 `Ser`, `Ir`, `Ver`를 모두 포함하였으며, 학습 빈도가 높은 주요 동사 `Estar`(규칙)를 추가하여 완벽 대비합니다.
+- **현재 완료(Pretérito Perfecto) 불규칙 마스터**: 과거분사가 불규칙하게 변하는 주요 동사(`Hecho`, `Puesto`, `Escrito`, `Dicho`, `Vuelto`, `Abierto`, `Roto`, `Leído`)를 추가하여 완료 시제 활용 능력을 극대화합니다.
+- **단순 미래(Futuro Simple) 불규칙 마스터**: 미래 시제에서 어간이 변하는 주요 불규칙 동사 10종(`Decir`, `Hacer`, `Poder`, `Querer`, `Saber`, `Salir`, `Tener`, `Venir`, `Poner`, `Haber`)을 완벽하게 지원합니다.
+- **단순 과거(Pretérito Indefinido) 불규칙 심화**: 학습 난이도가 높은 불규칙 동사 12종을 집중적으로 보강했습니다.
+  - **U-Stem Group**: `Estar`(Estuve), `Tener`(Tuve), `Poder`(Pude), `Poner`(Puse), `Saber`(Supe), `Haber (Hay)`(Hubo)
+  - **I-Stem Group**: `Querer`(Quise), `Venir`(Vine), `Hacer`(Hice)
+  - **J-Stem Group**: `Decir`(Dije), `Traer`, `Conducir` 등의 패턴을 대표하는 동사
+  - **Total Irregulars**: `Ser`/`Ir`(Fui), `Dar`(Di)
+- **현재 진행 시제(Presente Progresivo) 강화**: 빈도수가 높은 불규칙 동사 6종(`Leer`, `Repetir`, `Decir`, `Venir`, `Dormir`, `Morir`)을 포함하여 진행형 불규칙 패턴 학습을 지원합니다.
+
+---
+
+## 🛠️ 기술 스택 (Tech Stack)
+
+- **Frontend**: React (v19), Tailwind CSS
+- **AI Engine**: Google Gemini API (TTS Modality)
+- **Storage**: IndexedDB (Audio Persistence)
+- **Audio Processing**: Client-side Multi-file Batch Export (WAV)
+
+---
+
+## 💡 학습 가이드 (Usage Tips)
+
+1. **TENSE FAVORITES**: 집중적으로 연습하고 싶은 시제 카드에 하트(♥)를 표시하세요.
+2. **DOWNLOAD PACK**: 상단 'DOWNLOAD' 버튼을 누르면 즐겨찾기한 시제들이 각각의 파일로 다운로드됩니다.
+3. **AUDIO SHADOWING**: 일정한 정상 속도로 재생되는 음성을 들으며 시제 변화를 따라 말하세요(Shadowing). 실제 회화 리듬을 익히는 데 최적입니다.
+
+---
+*VozViva는 당신의 완벽한 스페인어 리듬을 응원합니다.*
