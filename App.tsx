@@ -159,7 +159,7 @@ const App: React.FC = () => {
   useEffect(() => { audioStore.getAllKeys().then(keys => setCachedKeys(new Set(keys))); }, []);
 
   const getVerbKey = (tenseId: string, verbName: string) => `${tenseId}_${verbName}`;
-  const isVerbCached = (tenseId: string, verbName: string) => cachedKeys.has(`v3_${getVerbKey(tenseId, verbName)}`);
+  const isVerbCached = (tenseId: string, verbName: string) => cachedKeys.has(`v5_${getVerbKey(tenseId, verbName)}`);
   const isTenseCached = (tenseId: string) => {
     const tense = SPANISH_VERB_DATA.find(t => t.id === tenseId);
     return tense ? tense.verbs.every(v => isVerbCached(tenseId, v.name)) : false;
@@ -230,7 +230,7 @@ const App: React.FC = () => {
   };
 
   const getVerbAudioBuffer = async (tense: TenseData, verb: Verb, prefixWithTense: boolean = false): Promise<Uint8Array | null> => {
-    const baseKey = `v3_${getVerbKey(tense.id, verb.name)}`;
+    const baseKey = `v5_${getVerbKey(tense.id, verb.name)}`; // v5 updated for "Usted/Ustedes" full reading
     const cacheKey = prefixWithTense ? `prefixed_${baseKey}` : baseKey;
     
     const cachedData = await audioStore.get(cacheKey);
@@ -238,11 +238,24 @@ const App: React.FC = () => {
 
     if (stopRequested.current) return null;
 
-    const speedInstruction = "Speak clearly at a natural, standard, and consistent native speed. Maintain the same pace for all phrases, avoiding any sudden changes in speed: ";
+    // Strict Instruction for Male Native voice and Standard Speed
+    const speedInstruction = "You are a male native Spanish speaker. Speak clearly at a natural, standard, and consistent native speed. Maintain the same steady pace for all phrases without variation: ";
     let script = speedInstruction + (prefixWithTense ? `${tense.id}. ` : "");
     script += `${verb.name}. `;
+
     verb.conjugations.forEach(c => {
-      if (c.form !== '-') script += `${c.pronoun.split('/')[0]} ${c.form}. `;
+      if (c.form !== '-') {
+        let pronounToRead = c.pronoun;
+        // User Specific Requirement: Él/Ella/Ud. -> Usted | Ellos/Ellas/Uds. -> Ustedes
+        if (pronounToRead === "Él/Ella/Ud.") {
+          pronounToRead = "Usted";
+        } else if (pronounToRead === "Ellos/Ellas/Uds.") {
+          pronounToRead = "Ustedes";
+        } else {
+          pronounToRead = pronounToRead.split('/')[0];
+        }
+        script += `${pronounToRead} ${c.form}. `;
+      }
     });
 
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
@@ -253,7 +266,11 @@ const App: React.FC = () => {
         contents: [{ parts: [{ text: script.trim() }] }],
         config: {
           responseModalities: [Modality.AUDIO],
-          speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Charon' } } },
+          speechConfig: { 
+            voiceConfig: { 
+              prebuiltVoiceConfig: { voiceName: 'Charon' } // Native Male Voice
+            } 
+          },
         },
       });
       const audioData = response.candidates?.[0]?.content?.parts?.find((p: any) => p.inlineData?.data);
